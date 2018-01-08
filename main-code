@@ -1,0 +1,90 @@
+import math
+import time
+
+def fact(a):
+    res=1
+    for i in range(2,a+1):
+        res=res*i
+    return res
+
+def binomial(x,y):
+    return fact(y)/(fact(x)*fact(y-x))
+
+def pascal(y):
+    return [binomial(x,y) for x in range(y+1)]
+    
+def prob(y,p=0.5):
+    ptrue=[p**x for x in range(y+1)]
+    pfalse=[(1-p)**(y-x) for x in range(y+1)]
+    #res=list(range(y+1))
+    #for x in range(y+1):
+    res=[binomial(x,y)*ptrue[x]*pfalse[x] for x in range(y+1)]
+    return res
+
+def baseline(samples,probs,result):
+    expanded=[]
+    scott=1
+    for i in range(len(samples)):
+        expanded.append(prob(samples[i],probs[i]))
+        scott=scott*expanded[i][result[i]]
+    return expanded,scott
+
+def rcalc(expanded,samples,scott):
+    rvalue=0
+    for i in range(samples[0]+1):
+        probtempi=expanded[0][i]
+        for j in range(samples[1]+1):
+            probtempj=probtempi*expanded[1][j]
+            for k in range(samples[2]+1):
+                probtempk=probtempj*expanded[2][k]
+                for l in range(samples[3]+1):
+                    probtempl=probtempk*expanded[3][l]
+                    for m in range(samples[4]+1):
+                        probtempm=probtempl*expanded[4][m]
+                        for n in range(samples[5]+1):
+                            probtemp=probtempm*expanded[5][n]
+                            #probtemp=expanded[0][i]*expanded[1][j]*expanded[2][k]*expanded[3][l]*expanded[4][m]*expanded[5][n]
+                            if probtemp <= scott:
+                                rvalue=rvalue+probtemp
+    return rvalue
+
+#def rloop(expanded,samples,scott,n):
+#    rvalue=0
+#    if
+
+time.clock()
+
+rvalue=list(range(4))
+
+samples=[8,22,13,18,25,9]
+probs=[0.5,0.6,0.7,0.8,0.9,0.95]
+result=[5,14,8,16,24,8]
+
+expanded,scott=baseline(samples,probs,result)
+rvalue[0]=rcalc(expanded,samples,scott)
+
+samples=[13,21,16,16,17,9]
+result=[8,12,13,13,16,9]
+probs=[0.5,0.6,0.7,0.8,0.9,0.95]
+
+expanded,scott=baseline(samples,probs,result)
+rvalue[1]=rcalc(expanded,samples,scott)
+
+samples=[3,8,5,6,4,7]
+result=[0,4,4,5,4,7]
+probs=[0.5,0.6,0.7,0.8,0.9,0.95]
+
+expanded,scott=baseline(samples,probs,result)
+rvalue[2]=rcalc(expanded,samples,scott)
+
+samples=[8,9,8,15,7,5]
+result=[4,7,6,12,7,5]
+probs=[0.5,0.6,0.7,0.8,0.9,0.95]
+
+expanded,scott=baseline(samples,probs,result)
+rvalue[3]=rcalc(expanded,samples,scott)
+
+timer=time.clock()
+
+
+
