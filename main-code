@@ -48,41 +48,57 @@ def rcalc(expanded,samples,scott):
                                 rvalue=rvalue+probtemp
     return rvalue
 
-#def rloop(expanded,samples,scott,n):
-#    rvalue=0
-#    if
+def rloop(expanded,samples,scott,probtemp,n):
+    global rtemp
+    if n+1<len(samples):
+        for i in range(samples[n]+1):
+            if n==0:
+                probtemp[n]=expanded[n][i]
+            else:
+                probtemp[n]=probtemp[n-1]*expanded[n][i]
+            rloop(expanded,samples,scott,probtemp,n+1)
+    else:
+        for i in range(samples[n]+1):
+            probtemp[n]=probtemp[n-1]*expanded[n][i]
+            if probtemp[n] <= scott:
+                rtemp=rtemp+probtemp[n]
+    return rtemp
 
 time.clock()
 
 rvalue=list(range(4))
 
-samples=[8,22,13,18,25,9]
-probs=[0.5,0.6,0.7,0.8,0.9,0.95]
-result=[5,14,8,16,24,8]
+samples=[8,22,13,18,25,9,4]
+result=[5,14,8,16,24,8,4]
+probs=[0.5,0.6,0.7,0.8,0.9,0.95,0.99]
 
+rtemp=0
 expanded,scott=baseline(samples,probs,result)
-rvalue[0]=rcalc(expanded,samples,scott)
+rvalue[0]=rloop(expanded,samples,scott,list(range(len(samples))),0)
 
-samples=[13,21,16,16,17,9]
-result=[8,12,13,13,16,9]
-probs=[0.5,0.6,0.7,0.8,0.9,0.95]
+samples=[13,21,16,16,17,9,3]
+result=[8,12,13,13,16,9,3]
+probs=[0.5,0.6,0.7,0.8,0.9,0.95,0.99]
 
+rtemp=0
 expanded,scott=baseline(samples,probs,result)
-rvalue[1]=rcalc(expanded,samples,scott)
+rvalue[1]=rloop(expanded,samples,scott,list(range(len(samples))),0)
 
 samples=[3,8,5,6,4,7]
 result=[0,4,4,5,4,7]
 probs=[0.5,0.6,0.7,0.8,0.9,0.95]
 
+rtemp=0
 expanded,scott=baseline(samples,probs,result)
-rvalue[2]=rcalc(expanded,samples,scott)
+rvalue[2]=rloop(expanded,samples,scott,list(range(len(samples))),0)
 
-samples=[8,9,8,15,7,5]
-result=[4,7,6,12,7,5]
-probs=[0.5,0.6,0.7,0.8,0.9,0.95]
+samples=[8,9,8,15,7,5,6]
+result=[4,7,6,12,7,5,6]
+probs=[0.5,0.6,0.7,0.8,0.9,0.95,0.99]
 
+rtemp=0
 expanded,scott=baseline(samples,probs,result)
-rvalue[3]=rcalc(expanded,samples,scott)
+rvalue[3]=rloop(expanded,samples,scott,list(range(len(samples))),0)
 
 timer=time.clock()
 
